@@ -24,4 +24,7 @@ const (
 
 	LEFT_BRACKET  TokenType = "LEFT_BRACKET"
 	RIGHT_BRACKET TokenType = "RIGHT_BRACKET"
+
+	OBJECT TokenType = "OBJECT"
+	ARRAY  TokenType = "ARRAY"
 )
