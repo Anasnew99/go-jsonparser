@@ -1,45 +1,87 @@
 # JSON Parser
 
-A simple JSON lexer implementation in Go that tokenizes JSON input into its constituent parts.
-
-## Overview
-
-This project implements a lexical analyzer (lexer) for JSON data. It takes JSON input as a string and breaks it down into tokens, which are the smallest meaningful units in the JSON syntax. The lexer supports all basic JSON data types including:
-
-- Strings
-- Numbers (integers and floating-point)
-- Booleans (true/false)
-- Null values
-- Objects (key-value pairs)
-- Arrays
+A simple and efficient JSON parser written in Go that can parse JSON strings and files into Go data structures.
 
 ## Features
 
-- Tokenizes JSON input into meaningful components
-- Handles whitespace and special characters
-- Supports all standard JSON data types
-- Simple and easy to understand implementation
+- Parses JSON strings and files
+- Supports all standard JSON data types:
+  - Objects (maps)
+  - Arrays
+  - Strings
+  - Numbers
+  - Booleans
+  - Null
+- Pretty printing of parsed JSON
+- Error handling for invalid JSON
+
+## Usage
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+func main() {
+    // Parse a JSON string
+    jsonStr := `{"name": "John", "age": 30, "isStudent": false, "height": 1.75, "skills": ["JavaScript", "Python", "Go"]}`
+    parser := NewParser(jsonStr)
+    jsonObject, err := parser.Parse()
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+
+    // Access parsed data
+    name := jsonObject.(map[string]any)["name"].(string)
+    fmt.Println("Name:", name)
+
+    // Pretty print the parsed JSON
+    prettyJSON, err := json.MarshalIndent(jsonObject.(map[string]any), "", "  ")
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+    fmt.Println("Pretty Print:", string(prettyJSON))
+
+    // Parse a JSON file
+    fileParser := NewParser(string(fileContent))
+    fileObject, err := fileParser.Parse()
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+    // ... work with fileObject
+}
+```
+
+## Implementation Details
+
+The parser uses a recursive descent approach with the following components:
+
+1. **Lexer**: Tokenizes the input string into JSON tokens
+2. **Parser**: Converts tokens into Go data structures
+   - `Parse()`: Main entry point for parsing
+   - `parseObject()`: Handles JSON objects
+   - `parseArray()`: Handles JSON arrays
+   - `parseValue()`: Handles primitive values
+
+## Error Handling
+
+The parser provides clear error messages for common JSON parsing issues:
+- Unexpected end of file
+- Invalid token types
+- Missing commas
+- Invalid object/array structure
 
 ## Project Structure
 
 - `main.go` - Contains the main program entry point and example usage
 - `lexer.go` - Implements the JSON lexer functionality
 - `token.go` - Defines token types and structures
-
-## Usage
-
-Here's a simple example of how to use the JSON lexer:
-
-```go
-lexer := NewLexer(`{"name": "John", "age": 30, "isStudent": false, "skills": ["JavaScript", "Python", "Go"]}`)
-for {
-    token := lexer.NextToken()
-    if token.Type == EOF {
-        break
-    }
-    fmt.Println(token)
-}
-```
 
 ## Token Types
 
